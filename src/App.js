@@ -18,6 +18,17 @@ const RandomAnecdote = ({ handleVoteClick, anecdotes, votes }) => {
     </div>
   )
 }
+const TopAnecdote = ({ votes, anecdotes }) => {
+  const max = votes.reduce((prev, curr) => Math.max(prev, curr), -Infinity);
+  const index = votes.indexOf(max);
+  const topQuote = anecdotes[index];
+  return (
+    <div>
+      <p>{topQuote}</p>
+      <p>Has {max} votes</p>
+    </div>
+  )
+}
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -29,18 +40,18 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
     'The only way to go fast, is to go well.'
   ]
-  const [votes, setVotes] = useState({
-    0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0,
-  })
+  const [votes, setVotes] = useState(new Uint8Array(8))
   const handleVoteClick = (index) => {
-    setVotes({
-      ...votes,
-      [index]: votes[index] + 1
-    })
+    const copy = [...votes];
+    copy[index] = copy[index] + 1;
+    setVotes(copy);
   }
   return (
     <div>
+      <h1>Random Anecdote</h1>
       <RandomAnecdote handleVoteClick={handleVoteClick} anecdotes={anecdotes} votes={votes}/>
+      <h1>Top Anecdote</h1>
+      <TopAnecdote votes={votes} anecdotes={anecdotes} />
     </div>
   )
 }
